@@ -115,16 +115,16 @@
         <div>
           <label class="block text-xs font-bold text-cyan-300 mb-1">오늘 나의 마음 날씨</label>
           <div class="grid grid-cols-4 gap-2">
-            <button type="button" onclick="selectEmotion(this, 'bright', '☀️ 기쁨')" class="emotion-btn p-2 rounded-xl border border-white/10 bg-white/5 hover:bg-white/15 text-center text-xs active-emotion border-cyan-400 bg-cyan-500/20">
+            <button type="button" onclick="selectEmotion(this, 'bright', '☀️ 기쁨')" class="emotion-btn p-2 rounded-xl border border-cyan-400 bg-cyan-500/30 text-cyan-300 ring-2 ring-cyan-400/50 text-center text-xs transition-all">
               ☀️<br>기쁨
             </button>
-            <button type="button" onclick="selectEmotion(this, 'calm', '🌙 평온')" class="emotion-btn p-2 rounded-xl border border-white/10 bg-white/5 hover:bg-white/15 text-center text-xs">
+            <button type="button" onclick="selectEmotion(this, 'calm', '🌙 평온')" class="emotion-btn p-2 rounded-xl border border-white/10 bg-white/5 text-gray-300 hover:bg-white/15 text-center text-xs transition-all">
               🌙<br>평온
             </button>
-            <button type="button" onclick="selectEmotion(this, 'cloudy', '☁️ 우울')" class="emotion-btn p-2 rounded-xl border border-white/10 bg-white/5 hover:bg-white/15 text-center text-xs">
+            <button type="button" onclick="selectEmotion(this, 'cloudy', '☁️ 우울')" class="emotion-btn p-2 rounded-xl border border-white/10 bg-white/5 text-gray-300 hover:bg-white/15 text-center text-xs transition-all">
               ☁️<br>우울
             </button>
-            <button type="button" onclick="selectEmotion(this, 'tired', '🌧️ 지침')" class="emotion-btn p-2 rounded-xl border border-white/10 bg-white/5 hover:bg-white/15 text-center text-xs">
+            <button type="button" onclick="selectEmotion(this, 'tired', '🌧️ 지침')" class="emotion-btn p-2 rounded-xl border border-white/10 bg-white/5 text-gray-300 hover:bg-white/15 text-center text-xs transition-all">
               🌧️<br>지침
             </button>
           </div>
@@ -218,6 +218,30 @@
 
       <!-- TAB 3: Emotion Weather & Pair Missions -->
       <section id="tab-emotion" class="tab-content hidden p-4 max-w-3xl mx-auto w-full space-y-5 overflow-y-auto">
+        <!-- My Emotion Quick Switcher -->
+        <div class="glass-card p-5 rounded-3xl border border-white/10 space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-base font-bold text-white flex items-center gap-2">
+              🌦️ 내 마음 날씨 변경
+            </h3>
+            <span id="current-my-emotion-badge" class="text-xs px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-semibold">☀️ 기쁨</span>
+          </div>
+          <div class="grid grid-cols-4 gap-2">
+            <button type="button" onclick="updateAppEmotion('bright', '☀️ 기쁨')" class="p-2.5 rounded-xl border border-white/10 bg-white/5 hover:bg-cyan-500/20 hover:border-cyan-400 text-center text-xs transition-all font-semibold text-gray-200">
+              ☀️ 기쁨
+            </button>
+            <button type="button" onclick="updateAppEmotion('calm', '🌙 평온')" class="p-2.5 rounded-xl border border-white/10 bg-white/5 hover:bg-cyan-500/20 hover:border-cyan-400 text-center text-xs transition-all font-semibold text-gray-200">
+              🌙 평온
+            </button>
+            <button type="button" onclick="updateAppEmotion('cloudy', '☁️ 우울')" class="p-2.5 rounded-xl border border-white/10 bg-white/5 hover:bg-cyan-500/20 hover:border-cyan-400 text-center text-xs transition-all font-semibold text-gray-200">
+              ☁️ 우울
+            </button>
+            <button type="button" onclick="updateAppEmotion('tired', '🌧️ 지침')" class="p-2.5 rounded-xl border border-white/10 bg-white/5 hover:bg-cyan-500/20 hover:border-cyan-400 text-center text-xs transition-all font-semibold text-gray-200">
+              🌧️ 지침
+            </button>
+          </div>
+        </div>
+
         <div class="glass-card p-5 rounded-3xl border border-white/10 space-y-4">
           <h3 class="text-base font-bold text-white flex items-center gap-2">
             🌡️ 친구들의 마음 온도계
@@ -582,11 +606,24 @@
 
     function selectEmotion(btn, code, text) {
       document.querySelectorAll('.emotion-btn').forEach(b => {
-        b.classList.remove('border-cyan-400', 'bg-cyan-500/20');
+        b.classList.remove('border-cyan-400', 'bg-cyan-500/30', 'text-cyan-300', 'ring-2', 'ring-cyan-400/50');
+        b.classList.add('border-white/10', 'bg-white/5', 'text-gray-300');
       });
-      btn.classList.add('border-cyan-400', 'bg-cyan-500/20');
+      btn.classList.remove('border-white/10', 'bg-white/5', 'text-gray-300');
+      btn.classList.add('border-cyan-400', 'bg-cyan-500/30', 'text-cyan-300', 'ring-2', 'ring-cyan-400/50');
+
       currentUser.emotion = code;
       currentUser.emotionText = text;
+    }
+
+    function updateAppEmotion(code, text) {
+      currentUser.emotion = code;
+      currentUser.emotionText = text;
+      const statusText = document.getElementById('user-status-text');
+      if (statusText) statusText.innerText = `${currentUser.name} 님 • ${currentUser.emotionText}`;
+      const badge = document.getElementById('current-my-emotion-badge');
+      if (badge) badge.innerText = currentUser.emotionText;
+      toast(`🌦️ 내 마음 날씨가 '${text}'(으)로 업데이트되었습니다!`);
     }
 
     function completeOnboarding() {
